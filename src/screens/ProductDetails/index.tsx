@@ -1,119 +1,67 @@
-import React, { useMemo, useState } from 'react';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import React from 'react';
+import { TouchableOpacity } from 'react-native';
 import { SafeArea } from '@/components/SafeArea/SafeArea';
-import { ArrowLeftIcon, FavoriteIcon, ArrowRightIcon } from '@/assets/svg';
-import { ProductItem } from '@/components/AllItems';
+import { ArrowLeftIcon } from '@/assets/svg';
+import { useProductDetails } from './useProductDetails';
 import {
-  ActionButtonsRow,
-  BottomActions,
-  BottomContainer,
-  BuyNowButton,
-  BuyNowText,
+  BackButton,
   Container,
+  Content,
   Description,
-  DetailsContainer,
-  FavoriteButton,
+  ErrorButton,
+  ErrorButtonText,
+  ErrorText,
+  LoadingText,
   MainImage,
   Price,
   ScrollContainer,
-  Thumbnail,
-  ThumbnailsRow,
   Title,
-  TopActions,
-  TopButton,
-  VariationBadge,
-  VariationLabel,
-  VariationsContainer,
-  VariationsRow,
 } from './styles';
 
-type RouteParams = {
-  product: ProductItem;
-};
-
 const ProductDetails = () => {
-  const navigation = useNavigation();
-  const route = useRoute();
-  const { product } = route.params as RouteParams;
-
-  const [selectedImage, setSelectedImage] = useState(product.image);
-
-  const formattedPrice = useMemo(
-    () =>
-      new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL',
-      }).format(product.price),
-    [product.price],
-  );
+  const controller = useProductDetails();
 
   return (
     <SafeArea edges={['top', 'bottom']}>
       <Container>
         <ScrollContainer showsVerticalScrollIndicator={false}>
-          <TopActions>
-            <TopButton activeOpacity={0.8} onPress={() => navigation.goBack()}>
+          <BackButton>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={controller.handleGoBack}>
               <ArrowLeftIcon />
-            </TopButton>
+            </TouchableOpacity>
+          </BackButton>
 
-            <TopButton activeOpacity={0.8}>
-              <FavoriteIcon />
-            </TopButton>
-          </TopActions>
+          {controller.loading ? (
+            <Content>
+              <LoadingText>Carregando produto...</LoadingText>
+            </Content>
+          ) : controller.error ? (
+            <Content>
+              <ErrorText>{controller.error}</ErrorText>
 
-          <MainImage source={{ uri: selectedImage }} resizeMode="cover" />
-
-          <ThumbnailsRow>
-            {product.gallery.map((image, index) => (
-              <Thumbnail
-                key={`${product.id}-${index}`}
-                source={{ uri: image }}
-                resizeMode="cover"
-                isActive={selectedImage === image}
-                onPress={() => setSelectedImage(image)}
+              <ErrorButton
                 activeOpacity={0.85}
+                onPress={controller.handleRetry}>
+                <ErrorButtonText>Tentar novamente</ErrorButtonText>
+              </ErrorButton>
+            </Content>
+          ) : controller.product ? (
+            <>
+              <MainImage
+                source={{ uri: controller.product.image }}
+                resizeMode="cover"
               />
-            ))}
-          </ThumbnailsRow>
 
-          <DetailsContainer>
-            <Price>{formattedPrice}</Price>
-            <Title>{product.name}</Title>
-            <Description>{product.description}</Description>
-
-            <VariationsContainer>
-              <VariationLabel>Variações</VariationLabel>
-
-              <VariationsRow>
-                {product.variations.map(variation => (
-                  <VariationBadge key={variation}>{variation}</VariationBadge>
-                ))}
-              </VariationsRow>
-            </VariationsContainer>
-
-            <ActionButtonsRow>
-              <TopButton activeOpacity={0.8}>
-                <ArrowRightIcon />
-              </TopButton>
-            </ActionButtonsRow>
-          </DetailsContainer>
+              <Content>
+                <Price>{controller.formattedPrice}</Price>
+                <Title>{controller.product.name}</Title>
+                <Description>{controller.product.description}</Description>
+              </Content>
+            </>
+          ) : null}
         </ScrollContainer>
-
-        <BottomContainer>
-          <BottomActions>
-            <FavoriteButton activeOpacity={0.85}>
-              <FavoriteIcon />
-            </FavoriteButton>
-
-            <BuyNowButton activeOpacity={0.9} variant="secondary">
-              <BuyNowText variant="secondary">Adicionar ao carrinho</BuyNowText>
-            </BuyNowButton>
-
-            <BuyNowButton activeOpacity={0.9} variant="primary">
-              <BuyNowText variant="primary">Comprar agora</BuyNowText>
-            </BuyNowButton>
-          </BottomActions>
-        </BottomContainer>
       </Container>
     </SafeArea>
   );

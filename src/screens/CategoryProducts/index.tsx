@@ -29,13 +29,15 @@ const CategoryProducts = () => {
 
   const renderItem: ListRenderItem<Product> = useCallback(
     ({ item }) => (
-      <ItemCard activeOpacity={0.9}>
+      <ItemCard
+        activeOpacity={0.9}
+        onPress={() => controller.handleOpenProductDetails(item.id)}>
         <ItemImage source={{ uri: item.image }} resizeMode="cover" />
         <ItemDescription numberOfLines={2}>{item.name}</ItemDescription>
         <ItemPrice>{formatPrice(item.price)}</ItemPrice>
       </ItemCard>
     ),
-    [],
+    [controller],
   );
 
   return (

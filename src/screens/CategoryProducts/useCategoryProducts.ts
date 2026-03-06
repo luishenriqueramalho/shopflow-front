@@ -26,6 +26,13 @@ export const useCategoryProducts = () => {
     navigation.goBack();
   }, [navigation]);
 
+  const handleOpenProductDetails = useCallback(
+    (productId: string) => {
+      navigation.navigate('ProductDetails', { productId });
+    },
+    [navigation],
+  );
+
   const filteredProducts = useMemo(
     () => products.filter(product => product.category === categoryId),
     [categoryId, products],
@@ -38,5 +45,6 @@ export const useCategoryProducts = () => {
     categoryName: formattedCategoryName,
     filteredProducts,
     handleGoBack,
+    handleOpenProductDetails,
   };
 };
