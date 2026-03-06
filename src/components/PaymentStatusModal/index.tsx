@@ -1,5 +1,6 @@
 import React from 'react';
 import { ActivityIndicator, Modal } from 'react-native';
+
 import {
   ActionButton,
   ActionButtonText,
@@ -23,8 +24,6 @@ export const PaymentStatusModal = ({
   onFinish,
 }: PaymentStatusModalProps) => {
   const isProcessing = status === 'processing';
-
-  console.log('teste');
 
   return (
     <Modal
