@@ -3,4 +3,5 @@ export type MainStackParamList = {
   Home: undefined;
   CategoryProducts: undefined;
   ProductDetails: undefined;
+  Cart: undefined;
 };

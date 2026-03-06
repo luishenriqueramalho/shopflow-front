@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback } from 'react';
 import { FlatList, ListRenderItem } from 'react-native';
 import { Filter } from '@/assets/svg';
 import { Product } from '@/features/products/domain/product.types';

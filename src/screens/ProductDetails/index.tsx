@@ -1,16 +1,20 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { SafeArea } from '@/components/SafeArea/SafeArea';
-import { ArrowLeftIcon } from '@/assets/svg';
+import { ArrowLeftIcon, FavoriteProduct } from '@/assets/svg';
 import { useProductDetails } from './useProductDetails';
 import {
+  AddToCartButton,
+  AddToCartText,
   BackButton,
+  BottomActions,
   Container,
   Content,
   Description,
   ErrorButton,
   ErrorButtonText,
   ErrorText,
+  FavoriteButton,
   LoadingText,
   MainImage,
   Price,
@@ -63,6 +67,22 @@ const ProductDetails = () => {
           ) : null}
         </ScrollContainer>
       </Container>
+
+      <Content>
+        <BottomActions>
+          <FavoriteButton
+            activeOpacity={0.85}
+            onPress={controller.handleToggleFavorite}>
+            <FavoriteProduct favorite={controller.isFavorite} />
+          </FavoriteButton>
+
+          <AddToCartButton
+            activeOpacity={0.9}
+            onPress={controller.handleAddToCart}>
+            <AddToCartText>Adicionar ao carrinho</AddToCartText>
+          </AddToCartButton>
+        </BottomActions>
+      </Content>
     </SafeArea>
   );
 };

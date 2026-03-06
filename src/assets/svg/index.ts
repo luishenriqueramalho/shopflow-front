@@ -6,3 +6,4 @@ export { FavoriteIcon } from './FavoriteIcon';
 export { ProfileIcon } from './ProfileIcon';
 export { CartIcon } from './CartIcon';
 export { ArrowRightIcon } from './ArrowRightIcon';
+export { FavoriteProduct } from './FavoriteProduct';

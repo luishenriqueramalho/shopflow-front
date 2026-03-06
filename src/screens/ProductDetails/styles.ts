@@ -12,17 +12,6 @@ export const ScrollContainer = styled.ScrollView`
   flex: 1;
 `;
 
-export const TopActions = styled.View`
-  position: absolute;
-  top: ${scale(12)}px;
-  left: ${scale(16)}px;
-  right: ${scale(16)}px;
-  z-index: 10;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`;
-
 export const BackButton = styled.View`
   padding: ${scale(16)}px;
 `;
@@ -57,6 +46,37 @@ export const Description = styled.Text`
   font-size: ${scale(16)}px;
   line-height: ${scale(24)}px;
   color: ${Colors.gray600 || '#5f6368'};
+`;
+
+export const BottomActions = styled.View`
+  flex-direction: row;
+  align-items: center;
+  margin-top: ${scale(28)}px;
+`;
+
+export const FavoriteButton = styled.TouchableOpacity`
+  width: ${scale(60)}px;
+  height: ${scale(60)}px;
+  border-radius: ${scale(18)}px;
+  background-color: #f3f3f3;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const AddToCartButton = styled.TouchableOpacity`
+  flex: 1;
+  height: ${scale(60)}px;
+  margin-left: ${scale(16)}px;
+  border-radius: ${scale(18)}px;
+  background-color: #1f1f1f;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const AddToCartText = styled.Text`
+  font-size: ${scale(16)}px;
+  font-weight: 500;
+  color: #ffffff;
 `;
 
 export const LoadingText = styled.Text`
