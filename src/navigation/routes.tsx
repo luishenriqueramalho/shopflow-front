@@ -8,6 +8,7 @@ import Home from '@/screens/Home';
 import CategoryProducts from '@/screens/CategoryProducts';
 import ProductDetails from '@/screens/ProductDetails';
 import Cart from '@/screens/Cart';
+import Payment from '@/screens/Payment';
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
@@ -23,6 +24,7 @@ const MainStack = () => {
       <Stack.Screen name="CategoryProducts" component={CategoryProducts} />
       <Stack.Screen name="ProductDetails" component={ProductDetails} />
       <Stack.Screen name="Cart" component={Cart} />
+      <Stack.Screen name="Payment" component={Payment} />
     </Stack.Navigator>
   );
 };

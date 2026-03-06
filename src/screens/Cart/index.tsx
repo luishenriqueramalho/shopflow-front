@@ -128,7 +128,10 @@ const Cart = () => {
             <FooterTotal>{controller.totalFormatted}</FooterTotal>
           </FooterContent>
 
-          <FooterButton activeOpacity={0.9}>
+          <FooterButton
+            activeOpacity={controller.items.length ? 0.9 : 1}
+            onPress={controller.handleCheckout}
+            disabled={!controller.items.length}>
             <FooterButtonText>Checkout</FooterButtonText>
           </FooterButton>
         </Footer>

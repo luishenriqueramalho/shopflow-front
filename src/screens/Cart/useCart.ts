@@ -68,6 +68,14 @@ export const useCart = () => {
     navigation.goBack();
   }, [navigation]);
 
+  const handleCheckout = useCallback(() => {
+    if (!items.length) {
+      return;
+    }
+
+    navigation.navigate('Payment');
+  }, [items.length, navigation]);
+
   return {
     navigation,
     items,
@@ -79,5 +87,6 @@ export const useCart = () => {
     handleDecreaseQuantity,
     handleRemoveItem,
     handleGoBack,
+    handleCheckout,
   };
 };
