@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   PAYMENT_ADDRESS,
   PAYMENT_CONTACT,
@@ -11,8 +11,9 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import { useAppSelector } from '@/app/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { selectCartItems } from '@/features/cart/store/cart.selectors';
+import { clearCart } from '@/features/cart/store/cart.slice';
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('pt-BR', {
@@ -23,13 +24,21 @@ const formatCurrency = (value: number) =>
 
 export const usePayment = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const dispatch = useAppDispatch();
   const items = useAppSelector(selectCartItems);
+
+  const paymentTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const [selectedShippingOption, setSelectedShippingOption] =
     useState<ShippingOptionId>('standard');
   const [selectedPaymentMethod] = useState<PaymentMethodId>('card');
   const [isVoucherModalVisible, setIsVoucherModalVisible] = useState(false);
   const [appliedVoucher, setAppliedVoucher] = useState<Voucher | null>(null);
+  const [isPaymentStatusModalVisible, setIsPaymentStatusModalVisible] =
+    useState(false);
+  const [paymentStatus, setPaymentStatus] = useState<'processing' | 'success'>(
+    'processing',
+  );
 
   const address = PAYMENT_ADDRESS;
   const contact = PAYMENT_CONTACT;
@@ -75,6 +84,10 @@ export const usePayment = () => {
     [discountValue],
   );
 
+  const isPayButtonDisabled = useMemo(() => {
+    return items.length === 0 || isPaymentStatusModalVisible;
+  }, [items.length, isPaymentStatusModalVisible]);
+
   const handleSelectShippingOption = useCallback(
     (optionId: ShippingOptionId) => {
       setSelectedShippingOption(optionId);
@@ -103,6 +116,37 @@ export const usePayment = () => {
     return formatCurrency(value);
   }, []);
 
+  const handlePay = useCallback(() => {
+    if (items.length === 0 || isPaymentStatusModalVisible) {
+      return;
+    }
+
+    setPaymentStatus('processing');
+    setIsPaymentStatusModalVisible(true);
+
+    paymentTimeoutRef.current = setTimeout(() => {
+      setPaymentStatus('success');
+    }, 7000);
+  }, [items.length, isPaymentStatusModalVisible]);
+
+  const handleTrackOrder = useCallback(() => {
+    setIsPaymentStatusModalVisible(false);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (paymentTimeoutRef.current) {
+        clearTimeout(paymentTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleFinishPayment = useCallback(() => {
+    dispatch(clearCart());
+    setIsPaymentStatusModalVisible(false);
+    navigation.navigate('Home');
+  }, [dispatch, navigation]);
+
   return {
     address,
     contact,
@@ -113,15 +157,21 @@ export const usePayment = () => {
     selectedPaymentMethod,
     appliedVoucher,
     isVoucherModalVisible,
+    isPaymentStatusModalVisible,
+    paymentStatus,
     subtotalFormatted,
     shippingPriceFormatted,
     totalFormatted,
     discountFormatted,
+    isPayButtonDisabled,
     formatItemPrice,
     handleSelectShippingOption,
     handleOpenVoucherModal,
     handleCloseVoucherModal,
     handleApplyVoucher,
     handleGoBack,
+    handlePay,
+    handleTrackOrder,
+    handleFinishPayment,
   };
 };

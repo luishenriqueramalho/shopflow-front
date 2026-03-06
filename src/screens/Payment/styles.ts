@@ -1,8 +1,9 @@
 import { scale } from '@/theme/scale';
 import styled from 'styled-components/native';
 
-type ShippingOptionCardProps = {
-  selected: boolean;
+type Props = {
+  selected?: boolean;
+  disabled?: boolean;
 };
 
 export const Container = styled.View`
@@ -186,7 +187,7 @@ export const ItemPrice = styled.Text`
   color: #222222;
 `;
 
-export const ShippingOptionCard = styled.TouchableOpacity<ShippingOptionCardProps>`
+export const ShippingOptionCard = styled.TouchableOpacity<Props>`
   min-height: 54px;
   border-radius: 14px;
   padding: 14px;
@@ -196,7 +197,7 @@ export const ShippingOptionCard = styled.TouchableOpacity<ShippingOptionCardProp
   background-color: ${({ selected }) => (selected ? '#dfe7ff' : '#ffffff')};
 `;
 
-export const RadioOuter = styled.View<ShippingOptionCardProps>`
+export const RadioOuter = styled.View<Props>`
   width: 22px;
   height: 22px;
   border-radius: 11px;
@@ -312,11 +313,11 @@ export const DiscountText = styled.Text`
   margin-top: 4px;
 `;
 
-export const PayButton = styled.TouchableOpacity`
+export const PayButton = styled.TouchableOpacity<Props>`
   width: 146px;
   height: 48px;
   border-radius: 14px;
-  background-color: #1f1f1f;
+  background-color: ${({ disabled }) => (disabled ? '#bdbdc2' : '#1f1f1f')};
   align-items: center;
   justify-content: center;
 `;

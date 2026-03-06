@@ -1,6 +1,7 @@
 import React from 'react';
 import { SafeArea } from '@/components/SafeArea/SafeArea';
 import { VoucherModal } from '@/components/VoucherModal';
+import { PaymentStatusModal } from '@/components/PaymentStatusModal';
 import { usePayment } from './usePayment';
 import {
   AppliedVoucherBox,
@@ -220,8 +221,11 @@ const Payment = () => {
             ) : null}
           </TotalBox>
 
-          <PayButton activeOpacity={0.9}>
-            <PayButtonText>Pay</PayButtonText>
+          <PayButton
+            activeOpacity={controller.isPayButtonDisabled ? 1 : 0.9}
+            onPress={controller.handlePay}
+            disabled={controller.isPayButtonDisabled}>
+            <PayButtonText>Pagar</PayButtonText>
           </PayButton>
         </Footer>
 
@@ -230,6 +234,12 @@ const Payment = () => {
           vouchers={controller.vouchers}
           onClose={controller.handleCloseVoucherModal}
           onApply={controller.handleApplyVoucher}
+        />
+
+        <PaymentStatusModal
+          visible={controller.isPaymentStatusModalVisible}
+          status={controller.paymentStatus}
+          onFinish={controller.handleFinishPayment}
         />
       </Container>
     </SafeArea>

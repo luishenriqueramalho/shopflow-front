@@ -7,6 +7,11 @@ import {
   selectProductsLoadingList,
 } from '@/features/products/store/products.selectors';
 import { Product } from '@/features/products/domain/product.types';
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
 
 type CategoryCardItem = {
   id: string;
@@ -33,6 +38,7 @@ const CATEGORY_LABELS: Record<Product['category'], string> = {
 };
 
 export const useHome = () => {
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const dispatch = useAppDispatch();
 
   const products = useAppSelector(selectProductsList);
@@ -46,6 +52,22 @@ export const useHome = () => {
   const handleRetryFetchProducts = useCallback(() => {
     dispatch(fetchProductsRequest());
   }, [dispatch]);
+
+  const handleOpenProductDetails = useCallback(
+    (productId: string) => {
+      navigation.navigate('ProductDetails', { productId });
+    },
+    [navigation],
+  );
+
+  const formatPrice = useCallback((value: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    }).format(value);
+  }, []);
+
+  const keyExtractor = useCallback((item: Product) => item.id, []);
 
   const carouselItems = useMemo<CarouselItem[]>(() => {
     if (!products.length) {
@@ -120,6 +142,9 @@ export const useHome = () => {
     carouselItems,
     loadingProducts,
     errorProducts,
+    keyExtractor,
+    formatPrice,
     handleRetryFetchProducts,
+    handleOpenProductDetails,
   };
 };
