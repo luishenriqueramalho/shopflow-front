@@ -77,9 +77,10 @@ const ProductDetails = () => {
           </FavoriteButton>
 
           <AddToCartButton
-            activeOpacity={0.9}
-            onPress={controller.handleAddToCart}>
-            <AddToCartText>Adicionar ao carrinho</AddToCartText>
+            activeOpacity={controller.isProductInCart ? 1 : 0.9}
+            onPress={controller.handleAddToCart}
+            disabled={controller.isProductInCart}>
+            <AddToCartText>{controller.addToCartButtonLabel}</AddToCartText>
           </AddToCartButton>
         </BottomActions>
       </Content>

@@ -3,6 +3,10 @@ import { Image } from 'react-native';
 import { Colors } from '@/theme/colors';
 import { scale } from '@/theme/scale';
 
+type Props = {
+  disabled?: boolean;
+};
+
 export const Container = styled.View`
   flex: 1;
   background-color: ${Colors.white || '#ffffff'};
@@ -63,20 +67,19 @@ export const FavoriteButton = styled.TouchableOpacity`
   justify-content: center;
 `;
 
-export const AddToCartButton = styled.TouchableOpacity`
+export const AddToCartButton = styled.TouchableOpacity<Props>`
   flex: 1;
-  height: ${scale(60)}px;
-  margin-left: ${scale(16)}px;
-  border-radius: ${scale(18)}px;
-  background-color: #1f1f1f;
+  height: 56px;
+  border-radius: 16px;
   align-items: center;
   justify-content: center;
+  background-color: ${({ disabled }) => (disabled ? '#A0A0A0' : '#111111')};
 `;
 
 export const AddToCartText = styled.Text`
   font-size: ${scale(16)}px;
-  font-weight: 500;
-  color: #ffffff;
+  font-weight: 600;
+  color: ${Colors.white};
 `;
 
 export const LoadingText = styled.Text`

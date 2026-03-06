@@ -17,6 +17,7 @@ import {
   fetchProductByIdRequest,
 } from '@/features/products/store/products.slice';
 import { addToCart } from '@/features/cart/store/cart.slice';
+import { selectIsProductInCart } from '@/features/cart/store/cart.selectors';
 
 type RouteParams = {
   productId: string;
@@ -32,6 +33,7 @@ export const useProductDetails = () => {
   const product = useAppSelector(selectSelectedProduct);
   const loading = useAppSelector(selectProductsLoadingDetails);
   const error = useAppSelector(selectProductsErrorDetails);
+  const isProductInCart = useAppSelector(selectIsProductInCart(productId));
 
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -56,7 +58,7 @@ export const useProductDetails = () => {
   }, []);
 
   const handleAddToCart = useCallback(() => {
-    if (!product) {
+    if (!product || isProductInCart) {
       return;
     }
 
@@ -68,7 +70,7 @@ export const useProductDetails = () => {
         image: product.image,
       }),
     );
-  }, [dispatch, product]);
+  }, [dispatch, product, isProductInCart]);
 
   const formattedPrice = useMemo(() => {
     if (!product) {
@@ -81,12 +83,18 @@ export const useProductDetails = () => {
     }).format(product.price);
   }, [product]);
 
+  const addToCartButtonLabel = useMemo(() => {
+    return isProductInCart ? 'Adicionado ao carrinho' : 'Adicionar ao carrinho';
+  }, [isProductInCart]);
+
   return {
     product,
     loading,
     error,
     isFavorite,
+    isProductInCart,
     formattedPrice,
+    addToCartButtonLabel,
     handleGoBack,
     handleRetry,
     handleToggleFavorite,

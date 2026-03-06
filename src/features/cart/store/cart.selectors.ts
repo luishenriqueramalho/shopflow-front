@@ -13,3 +13,7 @@ export const selectCartTotal = (state: RootState) =>
     (accumulator, item) => accumulator + item.price * item.quantity,
     0,
   );
+
+export const selectIsProductInCart =
+  (productId: string) => (state: RootState) =>
+    state.cart.items.some(item => item.id === productId);
