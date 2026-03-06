@@ -2,7 +2,6 @@ import { useCallback, useMemo, useState } from 'react';
 import {
   PAYMENT_ADDRESS,
   PAYMENT_CONTACT,
-  PAYMENT_ITEMS,
   PAYMENT_SHIPPING_OPTIONS,
   PAYMENT_VOUCHERS,
 } from './mock';
@@ -12,6 +11,8 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
+import { useAppSelector } from '@/app/store/hooks';
+import { selectCartItems } from '@/features/cart/store/cart.selectors';
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('pt-BR', {
@@ -22,13 +23,14 @@ const formatCurrency = (value: number) =>
 
 export const usePayment = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const items = useAppSelector(selectCartItems);
+
   const [selectedShippingOption, setSelectedShippingOption] =
     useState<ShippingOptionId>('standard');
   const [selectedPaymentMethod] = useState<PaymentMethodId>('card');
   const [isVoucherModalVisible, setIsVoucherModalVisible] = useState(false);
   const [appliedVoucher, setAppliedVoucher] = useState<Voucher | null>(null);
 
-  const items = PAYMENT_ITEMS;
   const address = PAYMENT_ADDRESS;
   const contact = PAYMENT_CONTACT;
   const shippingOptions = PAYMENT_SHIPPING_OPTIONS;
@@ -60,11 +62,14 @@ export const usePayment = () => {
   }, [discountValue, shippingPrice, subtotal]);
 
   const subtotalFormatted = useMemo(() => formatCurrency(subtotal), [subtotal]);
+
   const shippingPriceFormatted = useMemo(
     () => (shippingPrice === 0 ? 'FREE' : formatCurrency(shippingPrice)),
     [shippingPrice],
   );
+
   const totalFormatted = useMemo(() => formatCurrency(total), [total]);
+
   const discountFormatted = useMemo(
     () => formatCurrency(discountValue),
     [discountValue],
@@ -94,6 +99,10 @@ export const usePayment = () => {
     navigation.goBack();
   }, [navigation]);
 
+  const formatItemPrice = useCallback((value: number) => {
+    return formatCurrency(value);
+  }, []);
+
   return {
     address,
     contact,
@@ -108,6 +117,7 @@ export const usePayment = () => {
     shippingPriceFormatted,
     totalFormatted,
     discountFormatted,
+    formatItemPrice,
     handleSelectShippingOption,
     handleOpenVoucherModal,
     handleCloseVoucherModal,

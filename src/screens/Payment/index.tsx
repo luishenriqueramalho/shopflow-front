@@ -135,10 +135,7 @@ const Payment = () => {
                   </ItemInfo>
 
                   <ItemPrice>
-                    {new Intl.NumberFormat('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL',
-                    }).format(item.price)}
+                    {controller.formatItemPrice(item.price)}
                   </ItemPrice>
                 </ItemRow>
               ))}
@@ -184,10 +181,7 @@ const Payment = () => {
                     <ShippingPrice>
                       {option.price === 0
                         ? 'FREE'
-                        : new Intl.NumberFormat('pt-BR', {
-                            style: 'currency',
-                            currency: 'BRL',
-                          }).format(option.price)}
+                        : controller.formatItemPrice(option.price)}
                     </ShippingPrice>
                   </ShippingOptionCard>
                 );
