@@ -1,0 +1,18 @@
+{
+  "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    "typeRoots": ["./node_modules/@types", "./@types"],
+    "skipLibCheck": true,
+    "types": ["styled-components"],
+    "moduleResolution": "bundler",
+    "strict": true,
+    "jsx": "react",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noEmit": true
+  }
+}
