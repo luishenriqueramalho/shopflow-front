@@ -1,10 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
-import {
-  NavigationProp,
-  ParamListBase,
-  useNavigation,
-  useRoute,
-} from '@react-navigation/native';
+import React, { useCallback } from 'react';
 import { SafeArea } from '@/components/SafeArea/SafeArea';
 import { Scroll, Wrapper } from '@/theme/global';
 import {
@@ -13,25 +7,36 @@ import {
   EmptyText,
   HeaderSubtitle,
   HeaderTitle,
+  ItemCard,
+  ItemDescription,
+  ItemImage,
+  ItemPrice,
+  Row,
 } from './styles';
-import { TouchableOpacity } from 'react-native';
+import { FlatList, ListRenderItem, TouchableOpacity } from 'react-native';
 import { ArrowLeftIcon } from '@/assets/svg';
+import { useCategoryProducts } from './useCategoryProducts';
+import { Product } from '@/features/products/domain/product.types';
 
-type RouteParams = {
-  categoryId: string;
-  categoryName: string;
-};
+const formatPrice = (value: number) =>
+  new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(value);
 
 const CategoryProducts = () => {
-  const navigation = useNavigation<NavigationProp<ParamListBase>>();
-  const route = useRoute();
-  const { categoryId, categoryName } = route.params as RouteParams;
+  const controller = useCategoryProducts();
 
-  const title = useMemo(() => categoryName, [categoryName]);
-
-  const handleGoBack = useCallback(() => {
-    navigation.goBack();
-  }, [navigation]);
+  const renderItem: ListRenderItem<Product> = useCallback(
+    ({ item }) => (
+      <ItemCard activeOpacity={0.9}>
+        <ItemImage source={{ uri: item.image }} resizeMode="cover" />
+        <ItemDescription numberOfLines={2}>{item.name}</ItemDescription>
+        <ItemPrice>{formatPrice(item.price)}</ItemPrice>
+      </ItemCard>
+    ),
+    [],
+  );
 
   return (
     <SafeArea edges={['top', 'bottom']}>
@@ -39,17 +44,32 @@ const CategoryProducts = () => {
         <Wrapper>
           <Container>
             <BackButtonRow>
-              <TouchableOpacity activeOpacity={0.7} onPress={handleGoBack}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={controller.handleGoBack}>
                 <ArrowLeftIcon />
               </TouchableOpacity>
             </BackButtonRow>
 
-            <HeaderTitle>{title}</HeaderTitle>
-            <HeaderSubtitle>ID da categoria: {categoryId}</HeaderSubtitle>
+            <HeaderTitle>{controller.categoryName}</HeaderTitle>
+            <HeaderSubtitle>
+              {controller.filteredProducts.length} item(ns)
+            </HeaderSubtitle>
 
-            <EmptyText>
-              Aqui será exibida a lista de produtos da categoria selecionada.
-            </EmptyText>
+            {controller.filteredProducts.length === 0 ? (
+              <EmptyText>Nenhum produto encontrado nesta categoria.</EmptyText>
+            ) : (
+              <FlatList
+                data={controller.filteredProducts}
+                keyExtractor={item => item.id}
+                renderItem={renderItem}
+                numColumns={2}
+                columnWrapperStyle={Row}
+                scrollEnabled={false}
+                showsVerticalScrollIndicator={false}
+                removeClippedSubviews
+              />
+            )}
           </Container>
         </Wrapper>
       </Scroll>

@@ -14,8 +14,12 @@ import Carousel from '@/components/Carousel';
 import Categories from '@/components/Categories';
 import AllItems from '@/components/AllItems';
 import Menu from '@/components/Menu';
+import { useHome } from './useHome';
+import { Text } from 'react-native';
 
 const Home = () => {
+  const controller = useHome();
+
   return (
     <>
       <SafeArea edges={['top', 'bottom']}>
@@ -34,9 +38,22 @@ const Home = () => {
               </Search>
             </Header>
 
-            <Carousel />
-            <Categories />
-            <AllItems />
+            {controller.loadingProducts ? (
+              <Text>Carregando produtos...</Text>
+            ) : controller.errorProducts ? (
+              <>
+                <Text>{controller.errorProducts}</Text>
+                <Text onPress={controller.handleRetryFetchProducts}>
+                  Tentar novamente
+                </Text>
+              </>
+            ) : (
+              <>
+                <Carousel items={controller.carouselItems} />
+                <Categories items={controller.categories} />
+                <AllItems products={controller.products} />
+              </>
+            )}
           </Wrapper>
         </Scroll>
 

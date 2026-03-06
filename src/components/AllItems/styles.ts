@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import { Image } from 'react-native';
+import { Image, ViewStyle } from 'react-native';
 import { Colors } from '@/theme/colors';
 import { scale } from '@/theme/scale';
 
@@ -29,7 +29,7 @@ export const HeaderActionButton = styled.TouchableOpacity`
   justify-content: center;
 `;
 
-export const Row = {
+export const Row: ViewStyle = {
   justifyContent: 'space-between',
   marginBottom: scale(16),
 };
